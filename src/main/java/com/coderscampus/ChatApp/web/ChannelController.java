@@ -30,7 +30,7 @@ public class ChannelController {
 	@PostMapping("/")
 	public String newChannel(Channel channel) {
 		channelService.save(channel);
-	
+		System.out.println(channel);
 		return "redirect:/welcome/";
 	}
 	
