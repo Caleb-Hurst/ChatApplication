@@ -1,33 +1,31 @@
-const socket = new WebSocket('ws://localhost:8080');
+const socket = io(); // connect to the server using Socket.IO
 
-socket.addEventListener('open', (event) => {
-	console.log('WebSocket connection established.');
+const messageContainer = document.getElementById("message-container");
+const messageInput = document.getElementById("message-input");
+const sendButton = document.getElementById("send-button");
+
+// prompt user for their name when they visit the page
+const name = prompt("What is your name?");
+socket.emit("new-user", name);
+appendMessage("You joined");
+
+// send a message to the server when the send button is clicked or the form is submitted
+sendButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  const message = messageInput.value;
+  if (message.trim() === "") return;
+  socket.emit("send-message", message);
+  messageInput.value = "";
 });
 
-socket.addEventListener('message', (event) => {
-	console.log(`Received message: ${event.data}`);
-	// Handle incoming message
+// receive and display messages from the server
+socket.on("receive-message", (data) => {
+  appendMessage(`${data.name}: ${data.message}`);
 });
-const messageForm = document.getElementById('message-form');
-const messageInput = document.getElementById('message-input');
 
-messageForm.addEventListener('submit', (event) => {
-	event.preventDefault();
-
-	const message = messageInput.value.trim();
-	if (message) {
-		socket.send(message);
-		messageInput.value = '';
-	}
-});
-const messagesContainer = document.getElementById('messages');
-
-socket.addEventListener('message', (event) => {
-	const message = event.data;
-	messagesContainer.innerHTML += `<p>${message}</p>`;
-});
-window.addEventListener('load', () => {
-	socket.addEventListener('open', (event) => {
-		console.log('WebSocket connection established.');
-	});
-});
+// add a message to the message container
+function appendMessage(message) {
+  const messageElement = document.createElement("div");
+  messageElement.innerText = message;
+  messageContainer.append(messageElement);
+}

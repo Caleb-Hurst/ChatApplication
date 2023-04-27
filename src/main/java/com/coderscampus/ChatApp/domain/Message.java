@@ -1,4 +1,4 @@
-package com.coderscampus.Assignment14.domain;
+package com.coderscampus.ChatApp.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

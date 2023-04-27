@@ -1,4 +1,4 @@
-package com.coderscampus.Assignment14;
+package com.coderscampus.ChatApp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
