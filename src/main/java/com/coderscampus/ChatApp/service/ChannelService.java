@@ -27,7 +27,7 @@ public class ChannelService {
 
 	public Channel createNewChannel() {
 		Channel channel = new Channel();
-		channel.setName("stuff");
+		
 		
 		return channelRepo.save(channel);
 	}

@@ -31,7 +31,7 @@ public class ChannelController {
 	public String newChannel(Channel channel) {
 		channelService.save(channel);
 		System.out.println(channel);
-		return "redirect:/welcome/";
+		return "redirect:/welcome";
 	}
 	
 

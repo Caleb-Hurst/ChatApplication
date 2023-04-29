@@ -3,6 +3,7 @@
 
 <head>
 <title>Chat</title>
+
 </head>
 <body>
 
@@ -11,7 +12,7 @@
 	<table class="table">
 		<tbody>
 			<tr th:each="channel: ${channels}">
-				<td><span th:text="${channel.name}"></span></td>
+				<td><span th:text="${channel.channelName}"></span></td>
 				</tr>
 		</tbody>
 
@@ -20,13 +21,13 @@
 		
 		<div>
 			<label class="form-label">New Channel: </label><input class="form-control"
-				type="text" th:field="${channel.name}" />
+				type="text" th:field="${channel.channelName}" />
 		</div>
 		
 		<div>
 			<input type="submit" value="Create"/>
 		</div>
 	</form>
-	<script src="welcome.js"></script>
+	<script type="text/javascript" src="/welcome.js"></script>
 </body>
 </html>
