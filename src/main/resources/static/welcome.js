@@ -1,32 +1,35 @@
-let newName = prompt("Please enter your name:");
-var user = {
-	"namez": newName
-}
-getUserByName(user)
-function getUserByName(name) {
-    return fetch(`/user?name=${name}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error('There was a problem with the fetch operation.');
-        }
-    })
-    .catch(error => {
-        console.error(error);
-    });
-}
-fetch('/user',{
-	method: 'POST',
-	headers: {
-		'Content-Type':'application/json'
-	},
-	body: JSON.stringify(user)
-	})
+// Check if the user's name is already stored in session storage
+let storedName = sessionStorage.getItem("username");
 
-alert("Hello, " + newName + "!");
+if (storedName) {
+	// User's name is already stored, use it
+	var user = {
+		"name": storedName
+	};
+	console.log(user);
+	fetch(`/user?name=${user.name}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then(response => response.json()).then(data => console.log(data));
+} else {
+	// User's name is not stored, prompt for it
+	let newName = prompt("Please enter your name:");
+	var user = {
+		"name": newName
+	};
+	console.log(user);
+	fetch(`/user?name=${user.name}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then(response => response.json()).then(data => console.log(data));
+
+	// Store the user's name in session storage
+	sessionStorage.setItem("username", newName);
+}
+
+
+

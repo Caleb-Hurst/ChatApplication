@@ -20,17 +20,19 @@ public class UserController {
 	@Autowired
 	private ChannelService channelService;
 
-	@PostMapping("/user")
-	@ResponseBody
-	public String createUser(@RequestBody User user) {
-		userService.save(user);
-		return "redirect:/welcome";
-	}
+
+
 	@GetMapping("/user")
 	@ResponseBody
 	public User findByName(@RequestParam String name) {
-		return userService.findByName(name);
-		
+		User user = userService.findByName(name);
+		if (user == null) {
+			user = new User();
+			user.setName(name);
+			userService.save(user);
+			return user;
+		}
+		return user;
 	}
 
 }

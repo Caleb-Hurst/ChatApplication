@@ -8,26 +8,24 @@
 <body>
 
 
-		<h1>Channels</h1>
+	<h1>Channels</h1>
 	<table class="table">
 		<tbody>
 			<tr th:each="channel: ${channels}">
-				<td><span th:text="${channel.channelName}"></span></td>
-				</tr>
+			<td><a th:href="@{/channel/{channelId}(channelId=${channel.channelId})}" th:text="${channel.channelName}"></a>
 		</tbody>
 
 	</table>
-		<form method="post" action="/">
-		
+	
+	<form method="post" action="/">
 		<div>
-			<label class="form-label">New Channel: </label><input class="form-control"
-				type="text" th:field="${channel.channelName}" />
+			<label class="form-label">New Channel: </label><input class="form-control" type="text" th:field="${channel.channelName}" />
 		</div>
-		
 		<div>
 			<input type="submit" value="Create"/>
 		</div>
 	</form>
+	
 	<script type="text/javascript" src="/welcome.js"></script>
 </body>
 </html>
