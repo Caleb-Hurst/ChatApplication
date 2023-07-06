@@ -2,20 +2,19 @@ package com.coderscampus.ChatApp.web;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.coderscampus.ChatApp.domain.Channel;
 import com.coderscampus.ChatApp.domain.Message;
-import com.coderscampus.ChatApp.domain.User;
 import com.coderscampus.ChatApp.service.ChannelService;
 import com.coderscampus.ChatApp.service.UserService;
 
@@ -27,6 +26,17 @@ public class ChannelController {
 	private ChannelService channelService;
 //	@Autowired
 //	private MessageService messageService;
+
+	@GetMapping("/**")
+	public ModelAndView redirectToWelcome(HttpSession session) {
+	    String storedName = (String) session.getAttribute("name");
+	    if (storedName == null) {
+	        return new ModelAndView("redirect:/welcome");
+	    } else {
+	        return new ModelAndView("welcome"); 
+	    }
+	}
+
 
 	@GetMapping("/welcome")
 	public String channel(ModelMap model) {
@@ -46,12 +56,12 @@ public class ChannelController {
 
 	@GetMapping("/channel/{channelId}")
 	public String getChannelData(@PathVariable Long channelId, Model model) {
-	    Channel channel = channelService.findById(channelId);
-	    model.addAttribute("channel", channel);
-	    model.addAttribute("channelId", channel.getChannelId());
-	    model.addAttribute("newMessage", new Message());
-	    // add code to retrieve messages by channelId and add to model
-	    return "channel";
+		Channel channel = channelService.findById(channelId);
+		model.addAttribute("channel", channel);
+		model.addAttribute("channelId", channel.getChannelId());
+		model.addAttribute("newMessage", new Message());
+		// add code to retrieve messages by channelId and add to model
+		return "channel";
 	}
-	
+
 }
