@@ -27,15 +27,15 @@ public class ChannelController {
 //	@Autowired
 //	private MessageService messageService;
 
-	@GetMapping("/**")
-	public ModelAndView redirectToWelcome(HttpSession session) {
-	    String storedName = (String) session.getAttribute("name");
-	    if (storedName == null) {
-	        return new ModelAndView("redirect:/welcome");
-	    } else {
-	        return new ModelAndView("welcome"); 
-	    }
-	}
+//	@GetMapping("/**")
+//	public ModelAndView redirectToWelcome(HttpSession session) {
+//	    String storedName = (String) session.getAttribute("name");
+//	    if (storedName == null) {
+//	        return new ModelAndView("redirect:/welcome");
+//	    } else {
+//	        return new ModelAndView("welcome"); 
+//	    }
+//	}
 
 
 	@GetMapping("/welcome")
