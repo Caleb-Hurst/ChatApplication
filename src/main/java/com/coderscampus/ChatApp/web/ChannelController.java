@@ -55,7 +55,7 @@ public class ChannelController {
 		return "redirect:/welcome";
 	}
 
-	@RequireUserName
+	
     @GetMapping("/channel/{channelId}")
     public String getChannelData(@PathVariable Long channelId, Model model, HttpSession session) {
         Channel channel = channelService.findById(channelId);
