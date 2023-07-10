@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.coderscampus.ChatApp.annotations.RequireUserName;
+
 import com.coderscampus.ChatApp.domain.Channel;
 import com.coderscampus.ChatApp.domain.Message;
 import com.coderscampus.ChatApp.service.ChannelService;
