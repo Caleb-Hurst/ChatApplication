@@ -40,6 +40,7 @@ public class ChannelController {
 
 	@GetMapping("/welcome")
 	public String channel(ModelMap model) {
+		
 		List<Channel> channels = channelService.findAll();
 		Channel channel = new Channel();
 		model.put("channel", channel);
@@ -55,13 +56,20 @@ public class ChannelController {
 	}
 
 	@GetMapping("/channel/{channelId}")
-	public String getChannelData(@PathVariable Long channelId, Model model) {
-		Channel channel = channelService.findById(channelId);
-		model.addAttribute("channel", channel);
-		model.addAttribute("channelId", channel.getChannelId());
-		model.addAttribute("newMessage", new Message());
-		// add code to retrieve messages by channelId and add to model
-		return "channel";
+	public String getChannelData(@PathVariable Long channelId, Model model,HttpSession session) {
+		 String storedName = (String) session.getAttribute("name");
+		    if (storedName == null) {
+		        return "redirect:/welcome";
+		    }
+		    else {
+		    	Channel channel = channelService.findById(channelId);
+				model.addAttribute("channel", channel);
+				model.addAttribute("channelId", channel.getChannelId());
+				model.addAttribute("newMessage", new Message());
+				// add code to retrieve messages by channelId and add to model
+				return "channel";
+		    }
+		
 	}
 
 }
