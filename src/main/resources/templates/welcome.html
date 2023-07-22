@@ -1,65 +1,112 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org">
-
 <head>
 <title>Chat</title>
+<style>
+/* Common styles for all devices */
+html, body {
+    background-image: linear-gradient(to right top, #a1a1a1, #81868c, #5c6f73, #3c5752, #2b3f2c);
+    height: 100%;
+    margin: 0; /* Set margin to 0 to avoid any default spacing */
+    padding: 0; /* Set padding to 0 to avoid any default spacing */
+}
 
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Style for the user's name display */
+#username-display {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    font-size: 18px;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    .form-label {
+        font-size: 16px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+}
+
+</style>
 </head>
 <body>
 
+<div class="container">
+    <div>
+        <h1>Channels</h1>
+    </div>
+    <div>
+        <table class="table">
+            <tbody>
+                <tr th:each="channel: ${channels}">
+                    <td><a th:href="@{/channel/{channelId}(channelId=${channel.channelId})}" th:text="${channel.channelName}"></a>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-	<h1>Channels</h1>
-	<table class="table">
-		<tbody>
-			<tr th:each="channel: ${channels}">
-			<td><a th:href="@{/channel/{channelId}(channelId=${channel.channelId})}" th:text="${channel.channelName}"></a>
-		</tbody>
+    <form method="post" action="/">
+        <div>
+            <label class="form-label">New Channel: </label><input class="form-control" type="text" th:field="${channel.channelName}" />
+        </div>
+        <div>
+            <input type="submit" value="Create" />
+        </div>
+    </form>
 
-	</table>
-	
-	<form method="post" action="/">
-		<div>
-			<label class="form-label">New Channel: </label><input class="form-control" type="text" th:field="${channel.channelName}" />
-		</div>
-		<div>
-			<input type="submit" value="Create"/>
-		</div>
-	</form>
-	
-	<script>// Check if the user's name is already stored in session storage
-	let storedName = sessionStorage.getItem("username");
+    <!-- User's name display element -->
+    <div id="username-display"></div>
+</div>
 
-	if (storedName) {
-		// User's name is already stored, use it
-		var user = {
-			"name": storedName
-		};
-		console.log(user);
-		fetch(`/user?name=${user.name}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(response => response.json()).then(data => console.log(data));
-	} else {
-		// User's name is not stored, prompt for it
-		let newName = prompt("Please enter your name:");
-		var user = {
-			"name": newName
-		};
-		console.log(user);
-		fetch(`/user?name=${user.name}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(response => response.json()).then(data => console.log(data));
+<script>
+    // Retrieve the user's name from session storage
+    let storedName = sessionStorage.getItem("username");
 
-		// Store the user's name in session storage
-		sessionStorage.setItem("username", newName);
-	}
+    // Update the user's name display element if the name is available
+    if (storedName) {
+        const usernameDisplay = document.getElementById("username-display");
+        usernameDisplay.innerText = `User: ${storedName}`;
 
+        // Fetch request (if needed) can be performed here or elsewhere based on your requirements
+        // For simplicity, it's not included in this script as it is not directly related to updating the display
+    } else {
+        // User's name is not stored, prompt for it
+        let newName = prompt("Please enter your name:");
+        var user = {
+            "name": newName
+        };
+        console.log(user);
 
+        // Store the user's name in session storage
+        sessionStorage.setItem("username", newName);
+
+        // Update the user's name display element
+        const usernameDisplay = document.getElementById("username-display");
+        usernameDisplay.innerText = `User: ${newName}`;
+
+        // Fetch request (if needed) can be performed here or elsewhere based on your requirements
+    }
 </script>
+
 </body>
 </html>
