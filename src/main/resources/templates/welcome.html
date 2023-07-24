@@ -3,7 +3,52 @@
 
 <head>
 <title>Chat</title>
+<style>
+/* Common styles for all devices */
+html, body {
+    background-image: linear-gradient(to right top, #a1a1a1, #81868c, #5c6f73, #3c5752, #2b3f2c);
+    height: 100%;
+    margin: 0; /* Set margin to 0 to avoid any default spacing */
+    padding: 0; /* Set padding to 0 to avoid any default spacing */
+}
 
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Style for the user's name display */
+#username-display {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    font-size: 18px;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    .form-label {
+        font-size: 16px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+}
+
+</style>
 </head>
 <body>
 
