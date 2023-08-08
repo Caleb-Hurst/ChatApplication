@@ -3,108 +3,169 @@
 
 <head>
 <title>Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> <!-- Include the Roboto font -->
 <style>
-/* Common styles for all devices */
 html, body {
-    background-image: linear-gradient(to right top, #a1a1a1, #81868c, #5c6f73, #3c5752, #2b3f2c);
+    font-family: 'Roboto', sans-serif;
+    background: radial-gradient(circle at 10% 20%, rgb(0, 0, 0) 0%, rgb(64, 64, 64) 90.2%);
     height: 100%;
-    margin: 0; /* Set margin to 0 to avoid any default spacing */
-    padding: 0; /* Set padding to 0 to avoid any default spacing */
+    margin: 0;
+    padding: 0;
+    color: white;
 }
 
-.container {
+body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    flex-direction: column;
 }
 
-h1 {
+#container {
+    max-width: 800px;
+    padding: 20px;
+    box-sizing: border-box;
     text-align: center;
+    
 }
 
-/* Style for the user's name display */
-#username-display {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+#message-box-container {
+    border: 1px solid #ccc;
+    height: 400px;
+    overflow-y: scroll;
+    padding: 10px;
+    margin-top: 10px; /* Adjust top margin to reduce spacing */
+    background: transparent;
+
+}
+
+#message-box {
+    margin: 0;
+    padding: 0;
+}
+
+#message-box p {
+    margin: 0;
+    padding: 5px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    text-align: left;
+
+}
+
+#input-box {
+    margin-top: 10px; /* Adjust top margin to reduce spacing */
+    display: flex;
+    align-items: center; /* Vertically center the input and button */
+}
+
+#input-box input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+}
+
+#input-box input[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
+}
+
+#home-button {
+    margin-top: 10px;
+    text-decoration: none;
+    background-color: #4CAF50;
     color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#home-button:hover {
+    background-color: #45a049;
+}
+.table {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
     font-size: 18px;
+    list-style: none;
+    padding: 0;
+    padding-bottom: 30px;
 }
 
-/* Mobile-specific styles */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 24px;
-    }
-
-    .form-label {
-        font-size: 16px;
-    }
-
-    .form-control {
-        font-size: 14px;
-    }
+.table li {
+    text-align: center;
+    margin: 5px 0;
 }
 
+/* Targeting anchor tags within .table class */
+.table a {
+    color: white;
+    text-decoration: none; /* Remove text decoration */
+}
 </style>
 </head>
 <body>
 
+<div class="container">
+    <h1>Channels</h1>
+    <table class="table">
+        <tbody>
+            <tr th:each="channel: ${channels}">
+                <td><a th:href="@{/channel/{channelId}(channelId=${channel.channelId})}" th:text="${channel.channelName}"></a></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <form method="post" action="/">
+        <div>
+            <label class="form-label">New Channel: </label><input class="form-control" type="text" th:field="${channel.channelName}" />
+        </div>
+        <div>
+            <input type="submit" value="Create"/>
+        </div>
+    </form>
+</div>
 
-	<h1>Channels</h1>
-	<table class="table">
-		<tbody>
-			<tr th:each="channel: ${channels}">
-			<td><a th:href="@{/channel/{channelId}(channelId=${channel.channelId})}" th:text="${channel.channelName}"></a>
-		</tbody>
+<script>// Check if the user's name is already stored in session storage
+let storedName = sessionStorage.getItem("username");
 
-	</table>
-	
-	<form method="post" action="/">
-		<div>
-			<label class="form-label">New Channel: </label><input class="form-control" type="text" th:field="${channel.channelName}" />
-		</div>
-		<div>
-			<input type="submit" value="Create"/>
-		</div>
-	</form>
-	
-	<script>// Check if the user's name is already stored in session storage
-	let storedName = sessionStorage.getItem("username");
+if (storedName) {
+    // User's name is already stored, use it
+    var user = {
+        "name": storedName
+    };
+    console.log(user);
+    fetch(`/user?name=${user.name}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json()).then(data => console.log(data));
+} else {
+    // User's name is not stored, prompt for it
+    let newName = prompt("Please enter your name:");
+    var user = {
+        "name": newName
+    };
+    console.log(user);
+    fetch(`/user?name=${user.name}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json()).then(data => console.log(data));
 
-	if (storedName) {
-		// User's name is already stored, use it
-		var user = {
-			"name": storedName
-		};
-		console.log(user);
-		fetch(`/user?name=${user.name}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(response => response.json()).then(data => console.log(data));
-	} else {
-		// User's name is not stored, prompt for it
-		let newName = prompt("Please enter your name:");
-		var user = {
-			"name": newName
-		};
-		console.log(user);
-		fetch(`/user?name=${user.name}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(response => response.json()).then(data => console.log(data));
-
-		// Store the user's name in session storage
-		sessionStorage.setItem("username", newName);
-	}
-
-
+    // Store the user's name in session storage
+    sessionStorage.setItem("username", newName);
+}
 </script>
 </body>
 </html>

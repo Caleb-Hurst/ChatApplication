@@ -4,104 +4,168 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <title>Chat App</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
 <style>
+html, body {
+    font-family: 'Roboto', sans-serif;
+    background: radial-gradient(circle at 10% 20%, rgb(0, 0, 0) 0%, rgb(64, 64, 64) 90.2%);
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
 body {
-	margin: 0;
-	padding: 0;
-	font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 #container {
-	max-width: 600px;
-	margin: 0 auto;
-	padding: 20px;
+    max-width: 800px; /* Increased max-width for wider message box */
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
-#message-box {
-	border: 1px solid #ccc;
-	height: 400px;
-	overflow-y: scroll;
-	padding: 10px;
+#message-box-container {
+    height: 400px;
+    width: 500px;
+    overflow-y: scroll;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: transparent; /* Transparent background for scrollbar */
 }
 
 #message-box p {
-	margin: 0;
-	padding: 5px;
-	background-color: #f1f1f1;
-	border-radius: 5px;
-	text-align: left;
+    margin: 0;
+    padding: 5px;
+    text-align: left;
 }
 
 #input-box {
-	margin-top: 20px;
-	display: flex;
+    margin-top: 20px;
+    display: flex;
 }
 
 #input-box input[type="text"] {
-	flex: 1;
-	padding: 10px;
-	font-size: 16px;
-	border: none;
-	border-radius: 5px 0 0 5px;
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px 0 0 5px;
 }
 
 #input-box input[type="submit"] {
-	padding: 10px;
-	font-size: 16px;
-	border: none;
-	border-radius: 0 5px 5px 0;
-	background-color: #4CAF50;
-	color: #fff;
-	cursor: pointer;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
 }
+
+#home-button {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 20px; /* Add some spacing below the "Home" button */
+    text-decoration: none;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#home-button:hover {
+    background-color: #45a049;
+}
+/* Add this to your existing <style> tag */
+#message-box-container::-webkit-scrollbar {
+    width: 8px; /* Adjust the width as needed */
+}
+
+#message-box-container::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3); /* Transparent white color for the scrollbar thumb */
+    border-radius: 5px; /* Rounded corners for the thumb */
+}
+
+
 </style>
 </head>
 <body>
-	<form>
-		<div id="messageArea">
-			<div th:each="message : ${channel.messages}">
-				<p th:text="${message.user.name + ': ' + message.message}"></p>
-			</div>
-		</div>
-		<input type="hidden" id="channelId" th:value="${channelId}" /> <input
-			type="text" id="messageInput">
-		<button onclick="sendMessage()">Send</button>
-	</form>
+    <form >
+        <div id="container">
+            <h1 th:text="${channel.channelName}"></h1>
+            <div id="message-box-container">
+                <div id="message-box">
+                    <div th:each="message : ${channel.messages}">
+                        <p th:text="${message.user.name + ': ' + message.message}"></p>
+                    </div>
+                </div>
+            </div>
+            <div id="input-box">
+                <input type="hidden" id="channelId" th:value="${channelId}" />
+                <input type="text" id="messageInput">
+                <input type="submit" value="Send" onclick="sendMessage()">
+            </div>
+            <a id="home-button" href="/welcome.html">Home</a>
+        </div>
+    </form>
 
-	<script>
-   
-</script>
-	<script>
-	setInterval(function() {
-	    $('#messageArea').load(location.href + ' #messageArea');
-	  }, 500);
-	function sendMessage() {
-		var channelId = document.getElementById('channelId').value;
-		var messageBox = document.getElementById('messageInput');
-		var message = {
-			"channelId": channelId,
-			"message": messageBox.value,
-			"user": sessionStorage.getItem('username')
-		};
-		messageBox.value = '';
-		fetch(`/channel/${channelId}?message=${message.message}&user=${message.user}`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(message)
-		})
-		.then(response => response.json())
-		.then(data => {
-			console.log(data);
-		})
-		.catch(error => {
-			console.error(error);
-		});
-	}
-	  setInterval(function() {
-		    $('#messageArea').load(window.location.href + ' #messageArea');
-		  }, 500);
-	</script>
+    <script>
+    var lastMessageCount = 0; // Store the last message count
+
+    // Function to scroll to the bottom of the message box
+    function scrollToBottom() {
+        var messageBox = document.getElementById('message-box-container');
+        messageBox.scrollTop = messageBox.scrollHeight;
+    }
+
+    // Function to check for new messages and scroll if needed
+    function checkForNewMessages() {
+        var currentMessageCount = $('#message-box p').length;
+        if (currentMessageCount > lastMessageCount) {
+            scrollToBottom();
+            lastMessageCount = currentMessageCount;
+        }
+    }
+
+    // Call the function when the page loads
+    window.onload = function() {
+        checkForNewMessages(); // Scroll if there are new messages
+        setInterval(checkForNewMessages, 1000); // Check every second for new messages
+    };
+        setInterval(function() {
+            $('#message-box').load(location.href + ' #message-box');
+        }, 500);
+
+        function sendMessage() {
+            var channelId = document.getElementById('channelId').value;
+            var messageBox = document.getElementById('messageInput');
+            var message = {
+                "channelId": channelId,
+                "message": messageBox.value,
+                "user": sessionStorage.getItem('username')
+            };
+            messageBox.value = '';
+            fetch(`/channel/${channelId}?message=${message.message}&user=${message.user}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(message)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+    </script>
 </body>
 </html>
